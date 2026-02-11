@@ -46,6 +46,22 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.recyclerview)
+
+    // CameraX core
+    implementation("androidx.camera:camera-core:1.4.0")
+    // ✅ REQUIRED "engine" for CameraX (fixes your crash)
+    implementation("androidx.camera:camera-camera2:1.4.0")
+
+    // Lifecycle integration (you are using ProcessCameraProvider)
+    implementation("androidx.camera:camera-lifecycle:1.4.0")
+
+    // PreviewView (you are using androidx.camera.view.PreviewView)
+    implementation("androidx.camera:camera-view:1.4.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
