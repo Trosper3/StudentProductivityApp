@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="50dp">
-
-    <TextView
-        android:id="@+id/textCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pages: 0"
-        android:textSize="18sp"
-        android:paddingBottom="8dp"/>
+    android:orientation="vertical"
+    android:layout_marginTop="50dp"
+    android:layout_marginBottom="50dp"
+    tools:context=".ReviewActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerPages"
+        android:id="@+id/rvPages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingTop="8dp">
+        android:layout_marginHorizontal="16dp"
+        android:hint="PDF Name">
 
-        <Button
-            android:id="@+id/btnAddMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add more" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPdfName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnExport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Export PDF"
-            android:layout_marginStart="8dp"/>
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnCreatePdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create PDF" />
 
 </LinearLayout>
