@@ -31,7 +31,7 @@ class AssignmentViewModel(private val repository: AssignmentRepository) : ViewMo
 class AssignmentViewModelFactory(private val repository: AssignmentRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AssignmentViewModel::class.java)) {
-            //
+            // Safe unchecked cast because we only instantiate AssignmentViewModel for this factory
             @Suppress("UNCHECKED_CAST")
             return AssignmentViewModel(repository) as T
         }
