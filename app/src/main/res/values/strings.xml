@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">StudentProductivityAPP</string>
+    <string name="pdf_manager">PDF File Management / Camera</string>
+    <string name="homework_calendar">Homework Calendar / Reminders</string>
+    <string name="campus_map">Campus Map</string>
+    <string name="video_lectures">Video Lecture Searching / Management</string>
+    <string name="video_lecture_url_hint">Enter video lecture URL</string>
+    <string name="load_video">Load</string>
+    <string name="search_phrase_hint">Search for a phrase</string>
+    <string name="search_button_text">Search</string>
+    <string name="scan_new_document">Scan a New Document</string>
+    <string name="view_saved_scans">View Saved Scans</string>
 </resources>

@@ -6,19 +6,19 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    tools:context=".PdfHubActivity">
+    tools:context="com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity">
 
     <Button
         android:id="@+id/btnScanNew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan a New Document" />
+        android:text="@string/scan_new_document" />
 
     <Button
         android:id="@+id/btnViewSaved"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="View Saved Scans" />
+        android:text="@string/view_saved_scans" />
 
 </LinearLayout>
