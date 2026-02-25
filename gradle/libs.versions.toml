@@ -16,7 +16,7 @@ cameraLifecycle = "1.5.3"
 recyclerview = "1.4.0"
 room = "2.6.1"
 composeCompiler = "1.5.3"
-ksp = "2.0.21-1.0.27"
+ksp = "2.3.10-1.0.28"
 materialVersion = "1.13.0"
 
 [libraries]
