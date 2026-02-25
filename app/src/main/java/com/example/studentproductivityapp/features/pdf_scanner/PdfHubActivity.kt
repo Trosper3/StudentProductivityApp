@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.pdf_scanner
 
 import android.Manifest
 import android.content.Intent
@@ -6,11 +6,12 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.studentproductivityapp.R
 
-class MainActivity : ComponentActivity() {
+class PdfHubActivity : AppCompatActivity() {
 
     private val requestCameraPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted: Boolean ->
@@ -23,10 +24,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera)
+        setContentView(R.layout.activity_pdf_hub)
 
-        // Button: open CameraX screen
-        findViewById<Button>(R.id.btnOpenCamera).setOnClickListener {
+        findViewById<Button>(R.id.btnScanNew).setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED
             ) {
@@ -36,10 +36,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Optional: open review screen (if you have it)
-        val reviewBtn = findViewById<Button?>(R.id.btnReview)
-        reviewBtn?.setOnClickListener {
-            startActivity(Intent(this, ReviewActivity::class.java))
+        findViewById<Button>(R.id.btnViewSaved).setOnClickListener {
+             startActivity(Intent(this, SavedPdfsActivity::class.java))
         }
     }
 }

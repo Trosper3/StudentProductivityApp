@@ -1,30 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/imgThumb"
-        android:layout_width="72dp"
-        android:layout_height="96dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Page thumbnail" />
+        android:id="@+id/ivPage"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/textPageLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingStart="12dp"
-        android:text="Page 1"
-        android:textSize="16sp" />
-
-    <Button
-        android:id="@+id/btnDelete"
+    <ImageButton
+        android:id="@+id/btnDeletePage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete" />
-</LinearLayout>
+        android:layout_gravity="top|end"
+        android:src="@android:drawable/ic_menu_delete" />
+
+</FrameLayout>

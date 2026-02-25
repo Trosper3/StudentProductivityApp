@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -35,6 +36,11 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+        }
+    }
 }
 
 dependencies {
@@ -48,21 +54,25 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.recyclerview)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation("com.google.android.material:material:1.12.0")
 
-    // CameraX core
-    implementation("androidx.camera:camera-core:1.4.0")
-    // ✅ REQUIRED "engine" for CameraX (fixes your crash)
-    implementation("androidx.camera:camera-camera2:1.4.0")
+    // Room Database dependencies
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    // Lifecycle integration (you are using ProcessCameraProvider)
-    implementation("androidx.camera:camera-lifecycle:1.4.0")
+    // ViewModel and Activity KTX for modern architecture
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.activity:activity-ktx:1.9.1")
 
-    // PreviewView (you are using androidx.camera.view.PreviewView)
-    implementation("androidx.camera:camera-view:1.4.0")
-    implementation(libs.google.material)
+    // CameraX
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

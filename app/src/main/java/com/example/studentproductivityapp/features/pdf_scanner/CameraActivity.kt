@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.pdf_scanner
 
 import android.Manifest
 import android.content.ContentValues
@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
@@ -19,8 +18,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import com.example.studentproductivityapp.R
 
-class CameraActivity : ComponentActivity() {
+class CameraActivity : androidx.activity.ComponentActivity() {
 
     private lateinit var previewView: PreviewView
     private lateinit var btnCapture: Button
@@ -97,7 +97,9 @@ class CameraActivity : ComponentActivity() {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/StudentScanner")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/StudentScanner")
+            }
         }
 
         val outputOptions = ImageCapture.OutputFileOptions
@@ -116,7 +118,6 @@ class CameraActivity : ComponentActivity() {
                         return
                     }
 
-                    // ✅ Part 6: Add captured image as a new page
                     ScanSession.pages.add(ScanPage(savedUri))
 
                     Toast.makeText(
@@ -124,9 +125,6 @@ class CameraActivity : ComponentActivity() {
                         "Added page ${ScanSession.pages.size}",
                         Toast.LENGTH_SHORT
                     ).show()
-
-                    // Optional: if you want to jump to review immediately after each capture:
-                    // startActivity(Intent(this@CameraActivity, ReviewActivity::class.java))
                 }
 
                 override fun onError(exception: ImageCaptureException) {
