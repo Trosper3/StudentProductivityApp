@@ -12,13 +12,13 @@
         android:id="@+id/btnScanNew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/scan_new_document" />
+        android:text="Scan a New Document" />
 
     <Button
         android:id="@+id/btnViewSaved"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/view_saved_scans" />
+        android:text="View Saved Scans" />
 
 </LinearLayout>

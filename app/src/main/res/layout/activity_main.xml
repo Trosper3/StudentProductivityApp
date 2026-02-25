@@ -13,27 +13,27 @@
         android:id="@+id/btnPdfManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pdf_manager" />
+        android:text="PDF File Management / Camera" />
 
     <Button
         android:id="@+id/btnHomeworkCalendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/homework_calendar" />
+        android:text="Homework Calendar / Reminders" />
 
     <Button
         android:id="@+id/btnCampusMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/campus_map" />
+        android:text="Campus Map" />
 
     <Button
         android:id="@+id/btnVideoLectures"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/video_lectures" />
+        android:text="Video Lecture Searching / Management" />
 
 </LinearLayout>
