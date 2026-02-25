@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    tools:context=".PdfHubActivity">
+    tools:context="com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity">
 
     <Button
         android:id="@+id/btnScanNew"
