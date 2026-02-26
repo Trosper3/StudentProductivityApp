@@ -37,6 +37,10 @@
 
         <!-- 3) Your app activities -->
         <activity
+            android:name=".ScheduleActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".features.pdf_scanner.SavedPdfsActivity"
             android:exported="false" />
 

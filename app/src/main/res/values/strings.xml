@@ -10,4 +10,5 @@
     <string name="search_button_text">Search</string>
     <string name="scan_new_document">Scan a New Document</string>
     <string name="view_saved_scans">View Saved Scans</string>
+    <string name="assignment_list_description">List of your academic assignments</string>
 </resources>

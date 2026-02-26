@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SavedPdfsActivity">
+    tools:context=".features.pdf_scanner.SavedPdfsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerSavedPdfs"
+        android:id="@+id/rvSavedPdfs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_pdf" />
+        tools:listitem="@layout/item_saved_pdf" />
 
     <TextView
         android:id="@+id/textNoPdfs"
@@ -18,14 +18,5 @@
         android:layout_gravity="center"
         android:text="No saved PDFs found."
         android:visibility="gone" />
-
-</FrameLayout>
-    tools:context=".features.pdf_scanner.SavedPdfsActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSavedPdfs"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_saved_pdf" />
 
 </FrameLayout>

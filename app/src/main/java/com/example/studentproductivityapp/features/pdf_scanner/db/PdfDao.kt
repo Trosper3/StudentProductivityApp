@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.Flow
 interface PdfDao {
 
     @Insert
-    fun insert(pdf: SavedPdf)
+    suspend fun insert(pdf: SavedPdf)
 
     @Query("SELECT * FROM saved_pdfs ORDER BY creationTimestamp DESC")
     fun getAllPdfs(): Flow<List<SavedPdf>>
 
     @Delete
-    fun delete(pdf: SavedPdf)
+    suspend fun delete(pdf: SavedPdf)
 }
