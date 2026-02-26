@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.StudentProductivityAPP" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.StudentProductivityAPP" parent="Theme.MaterialComponents.Light.NoActionBar" />
+
+    <!-- Changed parent from Theme.AppCompat.Light.NoActionBar to Theme.MaterialComponents.Light.NoActionBar -->
+    <!-- <style name="Theme.StudentProductivityAPP"
+        parent="Theme.MaterialComponents.Light.NoActionBar" /> -->
 </resources>
