@@ -12,7 +12,7 @@ import com.example.studentproductivityapp.viewmodel.AssignmentViewModel
 import com.example.studentproductivityapp.viewmodel.AssignmentViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ScheduleActivity  : AppCompatActivity() {
+class ScheduleActivity : AppCompatActivity() {
 
     private lateinit var viewModel: AssignmentViewModel
 
