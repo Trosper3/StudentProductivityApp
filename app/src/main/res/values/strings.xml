@@ -11,4 +11,6 @@
     <string name="scan_new_document">Scan a New Document</string>
     <string name="view_saved_scans">View Saved Scans</string>
     <string name="assignment_list_description">List of your academic assignments</string>
+    <string name="course_name_e_g_cs_3318">Course Name (e.g. CS 3318)</string>
+    <string name="new_assignment">New Assignment</string>
 </resources>

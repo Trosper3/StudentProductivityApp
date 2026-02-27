@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".features.home.MainActivity">
 
     <Button
         android:id="@+id/btnPdfManager"
