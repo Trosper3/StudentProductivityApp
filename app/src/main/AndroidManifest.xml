@@ -78,6 +78,11 @@
             </intent-filter>
         </activity>
 
+        <!-- New activity for adding assignments -->
+        <activity
+            android:name=".AddAssignmentActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

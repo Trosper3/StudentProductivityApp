@@ -13,7 +13,7 @@ class AssignmentViewModel(private val repository: AssignmentRepository) : ViewMo
     //Convert Flow to LiveData
     val allAssignments = repository.allAssignments.asLiveData()
 
-    //write to database in background, so app doesn't freeze during save
+    //write to database in background, so app doesn't "freeze" during save
     fun insert(assignment: Assignment) = viewModelScope.launch {
         repository.insert(assignment)
     }
@@ -31,6 +31,7 @@ class AssignmentViewModel(private val repository: AssignmentRepository) : ViewMo
 class AssignmentViewModelFactory(private val repository: AssignmentRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AssignmentViewModel::class.java)) {
+
             // Safe unchecked cast because we only instantiate AssignmentViewModel for this factory
             @Suppress("UNCHECKED_CAST")
             return AssignmentViewModel(repository) as T

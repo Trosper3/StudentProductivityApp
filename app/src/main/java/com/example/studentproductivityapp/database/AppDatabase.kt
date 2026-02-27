@@ -14,15 +14,21 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        //create a single instance of database
         fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "student_productivity_database"
-                ).build()
-                INSTANCE = instance
-                instance
+            //return INSTANCE ?:
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "student_productivity_database"
+                    ).build()
+                    INSTANCE = instance
+                }
+                return instance
             }
         }
     }

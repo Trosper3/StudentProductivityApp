@@ -65,7 +65,7 @@ class CameraActivity : androidx.activity.ComponentActivity() {
             val cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
+                it.surfaceProvider = previewView.surfaceProvider
             }
 
             imageCapture = ImageCapture.Builder()
