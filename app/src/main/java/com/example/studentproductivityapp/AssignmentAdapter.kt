@@ -59,7 +59,7 @@ class AssignmentAdapter(
         // Checks if the items are the same
         //if so, the item is redrawn
         override fun areItemsTheSame(oldItem: Assignment, newItem: Assignment): Boolean {
-            return oldItem.id === newItem.id
+            return oldItem.id == newItem.id
         }
 
         // Checks if the contents of the items are the same
