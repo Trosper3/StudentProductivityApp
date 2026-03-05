@@ -1,39 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp"
+    android:background="@color/isu_black"
+    android:fitsSystemWindows="true"
     tools:context=".features.home.MainActivity">
 
-    <Button
-        android:id="@+id/btnPdfManager"
+    <TextView
+        android:id="@+id/textTodayView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Good Afternoon, Jerry"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+    android:id="@+id/textDateView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:text="Loading today's day...."
+    android:textColor="@color/isu_orange"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/textTodayView" />
+
+
+<ImageButton
+    android:id="@+id/btnSettings"
+    android:contentDescription="Settings"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_marginEnd="24dp"
+    android:layout_marginTop="32dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:src="@android:drawable/ic_menu_preferences"
+    app:tint="@color/white"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textUpcomingTasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Upcoming Tasks"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rvQuickView"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginTop="8dp"
+    android:paddingHorizontal="16dp"
+    app:layout_constraintVertical_weight="1"
+    app:layout_constraintBottom_toTopOf="@+id/textRecentPDF"
+    app:layout_constraintTop_toBottomOf="@+id/textUpcomingTasks"
+    tools:listitem="@layout/item_assignment" />
+
+    <TextView
+        android:id="@+id/textRecentPDF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Recent Scans"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvQuickView"
+        app:layout_constraintBottom_toTopOf="@+id/rvRecentScans" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecentScans"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toBottomOf="@+id/textRecentPDF" />
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PDF File Management / Camera" />
+        android:background="@drawable/bg_rounded_nav"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav" />
 
-    <Button
-        android:id="@+id/btnHomeworkCalendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Homework Calendar / Reminders" />
-
-    <Button
-        android:id="@+id/btnCampusMap"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Campus Map" />
-
-    <Button
-        android:id="@+id/btnVideoLectures"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Video Lecture Searching / Management" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

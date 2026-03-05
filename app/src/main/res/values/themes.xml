@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Theme.StudentProductivityAPP" parent="Theme.MaterialComponents.Light.NoActionBar" />
-
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Changed parent from Theme.AppCompat.Light.NoActionBar to Theme.MaterialComponents.Light.NoActionBar -->
     <!-- <style name="Theme.StudentProductivityAPP"
         parent="Theme.MaterialComponents.Light.NoActionBar" /> -->
+    <!-- <style name="Theme.StudentProductivityAPP" parent="Theme.MaterialComponents.DayNight.NoActionBar" /> -->
+    <style name="Theme.StudentProductivityAPP.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/isu_black</item>
+    <item name="colorPrimary">@color/isu_orange</item>
+    <item name="colorPrimaryVariant">@color/isu_orange</item>
+        <item name="colorOnPrimary">@color/black</item>
+
+        <item name="colorSecondary">@color/isu_orange</item>
+        <item name="colorSecondaryVariant">@color/isu_orange</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+<item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor"> @color/isu_black</item>
+
+</style>
 </resources>
