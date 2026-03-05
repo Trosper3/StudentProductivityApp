@@ -90,11 +90,11 @@ class MainActivity : AppCompatActivity() {
 
         val pdfAdapter = SavedPdfsAdapter(
             onClick = { pdf ->
-                // Handle item click
-                Toast.makeText(this@MainActivity, "PDF clicked", Toast.LENGTH_SHORT).show()
-                TODO("Not yet implemented")
+                // Handle item click: open the PDF hub screen for now
+                val intent = Intent(this@MainActivity, PdfHubActivity::class.java)
+                startActivity(intent)
 
-                // You can navigate to a new activity or perform any other action here
+                // You can navigate to a more specific PDF viewer in the future if needed
             },
             onDelete = { pdf ->
                 lifecycleScope.launch {
