@@ -32,6 +32,7 @@ class ScheduleActivity  : AppCompatActivity() {
         val database = AppDatabase.getDatabase(this)
         val repo = AssignmentRepository(database.assignmentDao())
         val factory = AssignmentViewModelFactory(repo)
+        
         viewModel = ViewModelProvider(this, factory)[AssignmentViewModel::class.java]
 
         //Hook up both RecyclerViews in activity_schedule.xml
