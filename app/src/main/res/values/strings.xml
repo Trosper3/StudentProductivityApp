@@ -13,4 +13,11 @@
     <string name="assignment_list_description">List of your academic assignments</string>
     <string name="course_name_e_g_cs_3318">Course Name (e.g. CS 3318)</string>
     <string name="new_assignment">New Assignment</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_scanner">Scanner</string>
+    <string name="nav_lectures">Lectures</string>
+
 </resources>

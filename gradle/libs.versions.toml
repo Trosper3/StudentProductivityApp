@@ -14,7 +14,7 @@ appcompat = "1.7.1"
 cameraX = "1.5.3"
 recyclerview = "1.4.0"
 room = "2.7.0-alpha11"
-ksp = "2.3.2"
+ksp = "2.3.6"
 materialVersion = "1.13.0"
 coroutines = "1.8.0"
 
