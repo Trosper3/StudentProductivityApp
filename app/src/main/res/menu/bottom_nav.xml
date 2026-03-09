@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/nav_home"
+        android:icon="@android:drawable/ic_menu_myplaces"/>
+
+    <item
+        android:id="@+id/nav_assignment_trackr"
+        android:title="@string/nav_tasks"
+        android:icon="@android:drawable/ic_menu_agenda"/>
+
+    <item
+        android:id="@+id/nav_campus_map"
+        android:title="@string/nav_map"
+        android:icon="@android:drawable/ic_menu_directions"/>
+
+    <item
+        android:id="@+id/nav_pdf_scanner"
+        android:title="@string/nav_scanner"
+        android:icon="@android:drawable/ic_menu_camera"/>
+
+    <item
+        android:id="@+id/nav_video_lectures"
+        android:title="@string/nav_lectures"
+        android:icon="@android:drawable/ic_menu_search"/>
+
+
+</menu>
