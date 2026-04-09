@@ -1,5 +1,6 @@
 package com.example.studentproductivityapp.features.home
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
@@ -31,9 +32,7 @@ import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.launch
 
-
-
-class MainActivity : AppCompatActivity() {
+class  MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: AssignmentViewModel
 
@@ -41,8 +40,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window,false)
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_main)
+
+        val textTodayView = findViewById<TextView>(R.id.textTodayView)
+        val btnLogin = findViewById<ImageButton>(R.id.btnLogin)
+
+        // Check login status and update UI
+        updateLoginUI(textTodayView, btnLogin)
+
+        btnLogin.setOnClickListener {
+            val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
+
+            if (isLoggedIn) {
+                // Logout
+                sharedPref.edit().putBoolean("is_logged_in", false).apply()
+                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                // Login (Simulated)
+                sharedPref.edit().putBoolean("is_logged_in", true).apply()
+                Toast.makeText(this, "Logged in as Jerry", Toast.LENGTH_SHORT).show()
+            }
+            updateLoginUI(textTodayView, btnLogin)
+        }
 
         //Set current date
         val textDateView = findViewById<TextView>(R.id.textDateView)
@@ -55,8 +76,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Settings coming soon!", Toast.LENGTH_SHORT).show()
         }
 
-        //------------Assignments \"Quick View\" -----------------------------------
-        //set up Database connection for \"quick view\"
+        //------------Assignments "Quick View" -----------------------------------
         val database = AppDatabase.getDatabase(this)
         val repo = AssignmentRepository(database.assignmentDao())
         val factory = AssignmentViewModelFactory(repo)
@@ -70,10 +90,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Observe the LiveData from the ViewModel. Pick Top 3 assignments
-        //to show on quick view
         viewModel.allAssignments.observe(this) { assignments ->
-            //Ignore assignments when completed
             val incompleteAssignments = assignments.filter { !it.isCompleted }
             val sortedAssignments = incompleteAssignments.sortedBy { it.dueDateMillis }
             val top3Assignments = sortedAssignments.take(3)
@@ -82,19 +99,13 @@ class MainActivity : AppCompatActivity() {
 
 
         //-------------------Recent Scans View------------------------------------
-
         val pdfDatabase = PdfDatabase.getDatabase(this)
         val pdfDao = pdfDatabase.pdfDao()
-
         val pdfRecyclerView = findViewById<RecyclerView>(R.id.rvRecentScans)
-
         val pdfAdapter = SavedPdfsAdapter(
             onClick = { pdf ->
-                // Handle item click: open the PDF hub screen for now
                 val intent = Intent(this@MainActivity, PdfHubActivity::class.java)
                 startActivity(intent)
-
-                // You can navigate to a more specific PDF viewer in the future if needed
             },
             onDelete = { pdf ->
                 lifecycleScope.launch {
@@ -102,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "PDF deleted", Toast.LENGTH_SHORT).show()
                 }
             }
-
         )
 
         pdfRecyclerView.adapter = pdfAdapter
@@ -115,62 +125,66 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
         // Bottom navigation bar setup
         val navigationBarView = findViewById<NavigationBarView>(R.id.bottomNavigationView)
-
-        // Set the highlighted tab in nav bar
         navigationBarView.selectedItemId = R.id.nav_home
-
         navigationBarView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> true //Home is highlighted
+                R.id.nav_home -> true
                 R.id.nav_assignment_trackr -> {
                     startActivity(Intent(this, ScheduleActivity::class.java))
                     overridePendingTransition(0, 0)
                     finish()
                     true
                 }
-
                 R.id.nav_campus_map -> {
                     if (isInternetAvailable()) {
                         startActivity(Intent(this, CampusMapActivity::class.java))
-                        overridePendingTransition(0,0)
+                        overridePendingTransition(0, 0)
                         finish()
-                    }
-                    else {
+                    } else {
                         Toast.makeText(this, "Internet connection required for map.", Toast.LENGTH_SHORT).show()
                     }
                     true
                 }
-
-
                 R.id.nav_pdf_scanner -> {
                     startActivity(Intent(this, PdfHubActivity::class.java))
-                    overridePendingTransition(0,0)
+                    overridePendingTransition(0, 0)
                     finish()
                     true
                 }
-
                 R.id.nav_video_lectures -> {
+                    val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
 
-                    if (isInternetAvailable()) {
+                    if (!isLoggedIn) {
+                        Toast.makeText(this, "Please login to access Video Lectures", Toast.LENGTH_LONG).show()
+                        false
+                    } else if (isInternetAvailable()) {
                         startActivity(Intent(this, VideoLectureActivity::class.java))
-                        overridePendingTransition(0,0)
+                        overridePendingTransition(0, 0)
                         finish()
-
-                        //Toast.makeText(this, \"Video Lectures coming soon!\", Toast.LENGTH_SHORT).show()
+                        true
                     } else {
                         Toast.makeText(this, "Internet connection required for video lectures.", Toast.LENGTH_SHORT).show()
+                        true
                     }
-                    true
                 }
-
                 else -> false
             }
         }
+    }
 
+    private fun updateLoginUI(textView: TextView, button: ImageButton) {
+        val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
+        if (isLoggedIn) {
+            textView.text = "Good Afternoon, Jerry"
+            button.setImageResource(android.R.drawable.ic_lock_power_off)
+        } else {
+            textView.text = "Good Afternoon, Student"
+            button.setImageResource(android.R.drawable.ic_menu_myplaces)
+        }
     }
 
     private fun isInternetAvailable(): Boolean {

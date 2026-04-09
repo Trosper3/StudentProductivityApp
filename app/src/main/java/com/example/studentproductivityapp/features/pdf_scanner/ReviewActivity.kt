@@ -1,9 +1,11 @@
 package com.example.studentproductivityapp.features.pdf_scanner
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.pdf.PdfDocument
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
@@ -32,6 +34,7 @@ import java.util.Collections
 class ReviewActivity : AppCompatActivity() {
 
     private val TAG = "ReviewActivity"
+    private val DEBUG_VISIBLE_TEXT = false // Set to true to see OCR text in Red
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +88,14 @@ class ReviewActivity : AppCompatActivity() {
             .build()
 
         val pdfDocument = PrintedPdfDocument(this, printAttributes)
+        
+        val textPaint = Paint().apply {
+            color = if (DEBUG_VISIBLE_TEXT) Color.RED else Color.argb(1, 0, 0, 0) 
+            isAntiAlias = true
+            typeface = Typeface.DEFAULT
+        }
+
+        var totalLinesDrawn = 0
 
         for ((index, scanPage) in ScanSession.pages.withIndex()) {
             val page = pdfDocument.startPage(index)
@@ -100,28 +111,53 @@ class ReviewActivity : AppCompatActivity() {
                     MediaStore.Images.Media.getBitmap(contentResolver, scanPage.picture)
                 }
 
-                val pageRatio = page.canvas.width.toFloat() / page.canvas.height.toFloat()
-                val bitmapRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+                val pageWidth = canvas.width.toFloat()
+                val pageHeight = canvas.height.toFloat()
+                val bitmapWidth = bitmap.width.toFloat()
+                val bitmapHeight = bitmap.height.toFloat()
 
-                val destRect = if (bitmapRatio > pageRatio) { // bitmap is wider, fit to width
-                    val h = (page.canvas.width / bitmapRatio).toInt()
-                    val top = (page.canvas.height - h) / 2
-                    Rect(0, top, page.canvas.width, top + h)
+                val pageRatio = pageWidth / pageHeight
+                val bitmapRatio = bitmapWidth / bitmapHeight
+
+                val destRect: Rect
+                val scaleFactor: Float
+
+                if (bitmapRatio > pageRatio) { // bitmap is wider, fit to width
+                    val h = (pageWidth / bitmapRatio).toInt()
+                    val top = ((pageHeight - h) / 2).toInt()
+                    destRect = Rect(0, top, pageWidth.toInt(), top + h)
+                    scaleFactor = pageWidth / bitmapWidth
                 } else { // bitmap is taller, fit to height
-                    val w = (page.canvas.height * bitmapRatio).toInt()
-                    val left = (page.canvas.width - w) / 2
-                    Rect(left, 0, left + w, page.canvas.height)
+                    val w = (pageHeight * bitmapRatio).toInt()
+                    val left = ((pageWidth - w) / 2).toInt()
+                    destRect = Rect(left, 0, left + w, pageHeight.toInt())
+                    scaleFactor = pageHeight / bitmapHeight
                 }
 
                 canvas.drawBitmap(bitmap, null, destRect, null)
 
+                // Overlay the OCR text line by line
+                for (line in scanPage.textLines) {
+                    val box = line.boundingBox
+                    
+                    val x = (box.left * scaleFactor) + destRect.left
+                    // Adjust baseline: drawing at box.bottom is usually correct for the baseline
+                    val y = (box.bottom * scaleFactor) + destRect.top 
+                    
+                    textPaint.textSize = box.height() * scaleFactor
+                    canvas.drawText(line.text, x, y, textPaint)
+                    totalLinesDrawn++
+                }
+
             } catch (e: Exception) {
-                // Let the user know an error occurred and continue to the next page
+                Log.e(TAG, "Error drawing page $index", e)
                 Toast.makeText(this, "Error drawing page: ${e.message}", Toast.LENGTH_SHORT).show()
             }
 
             pdfDocument.finishPage(page)
         }
+
+        Toast.makeText(this, "PDF created with $totalLinesDrawn lines detected", Toast.LENGTH_SHORT).show()
 
         val fileName = if (pdfName.endsWith(".pdf")) pdfName else "$pdfName.pdf"
         val pdfDir = getExternalFilesDir("pdfs")
@@ -145,10 +181,10 @@ class ReviewActivity : AppCompatActivity() {
         } catch (e: IOException) {
             pdfDocument.close()
             Toast.makeText(this, "Error saving PDF file: ${e.message}", Toast.LENGTH_LONG).show()
-            return // Stop if file saving fails
+            return 
         }
 
-        pdfDocument.close() // Close the document AFTER writing it
+        pdfDocument.close() 
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -156,12 +192,8 @@ class ReviewActivity : AppCompatActivity() {
                 val savedPdf = SavedPdf(displayName = pdfName, filePath = file.absolutePath)
                 pdfDao.insert(savedPdf)
 
-                // Switch back to the main thread to update the UI
                 withContext(Dispatchers.Main) {
                     ScanSession.pages.clear()
-                    Toast.makeText(this@ReviewActivity, "PDF saved successfully", Toast.LENGTH_LONG).show()
-
-                    // Navigate back to the Hub
                     val intent = Intent(this@ReviewActivity, PdfHubActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
