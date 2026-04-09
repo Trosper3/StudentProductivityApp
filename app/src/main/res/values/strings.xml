@@ -8,6 +8,8 @@
     <string name="load_video">Load</string>
     <string name="search_phrase_hint">Search for a phrase</string>
     <string name="search_button_text">Search</string>
+    <string name="prev_button_text">Previous</string>
+    <string name="next_button_text">Next</string>
     <string name="scan_new_document">Scan a New Document</string>
     <string name="view_saved_scans">View Saved Scans</string>
     <string name="assignment_list_description">List of your academic assignments</string>
@@ -19,5 +21,7 @@
     <string name="nav_map">Map</string>
     <string name="nav_scanner">Scanner</string>
     <string name="nav_lectures">Lectures</string>
+
+    <string name="ocr_keyword_detected">Keyword Detected!</string>
 
 </resources>

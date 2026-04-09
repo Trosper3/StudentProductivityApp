@@ -14,7 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
-    android:layout_marginBottom="50dp"
+    android:layout_marginBottom="100dp"
     tools:context=".features.campus_map.CampusMapActivity"
     tools:visibility="gone" />
 
