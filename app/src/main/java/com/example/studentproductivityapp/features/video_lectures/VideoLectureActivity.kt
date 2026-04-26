@@ -12,27 +12,26 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.appcompat.app.AppCompatActivity
 import com.example.studentproductivityapp.R
 import com.example.studentproductivityapp.ScheduleActivity
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
 import com.google.android.material.navigation.NavigationBarView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
-class VideoLectureActivity : ComponentActivity() {
+
+class VideoLectureActivity : AppCompatActivity() {
 
     data class TranscriptEntry(val text: String, val timestampSeconds: Int)
 
     private var transcript = mutableListOf<TranscriptEntry>()
     private var searchResults = listOf<TranscriptEntry>()
     private var currentResultIndex = 0
+
+    private var currentVideoId = ""
 
     private lateinit var webView: WebView
 
@@ -53,16 +52,24 @@ class VideoLectureActivity : ComponentActivity() {
         setupWebView()
         setupNavigation()
 
-        // Load initial mock data for testing
-        loadDefaultTranscript()
+//        // Load initial mock data for testing
+//        loadDefaultTranscript()
 
         btnLoad.setOnClickListener {
             val url = etVideoUrl.text.toString()
-            if (url.isNotEmpty()) {
-                val embedUrl = if (url.contains("youtube.com/watch?v=")) 
-                    url.replace("watch?v=", "embed/") else url
-                webView.loadUrl(embedUrl)
-                fetchTranscriptFromZoom(url)
+
+            currentVideoId = when {
+                url.contains("v=") -> url.substringAfter("v=").substringBefore("&")
+                url.contains("youtu.be/") -> url.substringAfter("youtu.be/").substringBefore("?")
+                else -> ""
+
+            }
+            if (currentVideoId.isNotEmpty()){
+                loadVideoAtTime(0)
+                loadLocalTranscript()
+            }
+            else {
+                Toast.makeText(this, "Please enter a Youtube video URL", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -102,86 +109,123 @@ class VideoLectureActivity : ComponentActivity() {
         webView.webChromeClient = WebChromeClient()
     }
 
-    private fun loadDefaultTranscript() {
+    private fun loadLocalTranscript() {
         transcript.clear()
-        transcript.addAll(listOf(
-            TranscriptEntry("Welcome to the lecture.", 0),
-            TranscriptEntry("Make Zoom your default application.", 10),
-            TranscriptEntry("Today we cover search APIs.", 45),
-            TranscriptEntry("Android development is fun.", 120)
-        ))
-    }
+        try {
+            val inputStream = assets.open("NoteGPT_TRANSCRIPT_Lecture 1 Introduction to CS and Programming Using Python.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
 
-    /**
-     * Simulates a call to the Zoom Cloud Recording API.
-     * In a production app, you would use Retrofit or OkHttp to call 
-     * GET https://api.zoom.us/v2/meetings/{meetingId}/recordings
-     */
-    private fun fetchTranscriptFromZoom(videoUrl: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Mocking network delay
-                delay(800)
+            var currentTimestampSeconds = 0
 
-                // This simulates the JSON structure returned by Zoom's Recording API
-                val mockApiResponse = """
-                {
-                    "recording_files": [
-                        {
-                            "file_type": "TRANSCRIPT",
-                            "transcript_data": [
-                                {"text": "Zoom recording started.", "start_time": 0},
-                                {"text": "In this session, we analyze student productivity.", "start_time": 30},
-                                {"text": "Let's look at the search feature implementation.", "start_time": 90},
-                                {"text": "The API returns a JSON with timestamps.", "start_time": 150},
-                                {"text": "Make Zoom your default app for all meetings.", "start_time": 210},
-                                {"text": "Conclusion of the recording.", "start_time": 300}
-                            ]
-                        }
-                    ]
-                }
-                """.trimIndent()
+            //Time for REGEX time format
+            val timeRegex = Regex("\\b(\\d{1,2}):(\\d{2})(?::(\\d{2}))?\\b")
+            reader.forEachLine { line ->
+                val match = timeRegex.find(line)
 
-                val jsonObject = JSONObject(mockApiResponse)
-                val files = jsonObject.getJSONArray("recording_files")
-                val apiTranscript = mutableListOf<TranscriptEntry>()
-
-                for (i in 0 until files.length()) {
-                    val file = files.getJSONObject(i)
-                    if (file.getString("file_type") == "TRANSCRIPT") {
-                        val dataArray = file.getJSONArray("transcript_data")
-                        for (j in 0 until dataArray.length()) {
-                            val entry = dataArray.getJSONObject(j)
-                            apiTranscript.add(TranscriptEntry(
-                                entry.getString("text"),
-                                entry.getInt("start_time")
-                            ))
-                        }
+                if (match != null) {
+                    val parts = match.value.split(":")
+                    currentTimestampSeconds = if (parts.size == 3) {
+                        parts[0].toInt() * 3600 + parts[1].toInt() * 60 + parts[2].toInt()
+                    } else if (parts.size == 2) {
+                        parts[0].toInt() * 60 + parts[1].toInt()
+                    }
+                    else {
+                        0
                     }
                 }
 
-                withContext(Dispatchers.Main) {
-                    transcript.clear()
-                    transcript.addAll(apiTranscript)
-                    // Reset search results for the new video
-                    searchResults = emptyList()
-                    currentResultIndex = 0
-                    Toast.makeText(this@VideoLectureActivity, "Transcript Synced via Zoom API", Toast.LENGTH_SHORT).show()
+                val cleanText = line.replace(timeRegex, "").replace(Regex("\\[.*?]"), "").trim()
+
+                if(cleanText.isNotEmpty()) {
+                    transcript.add(TranscriptEntry(cleanText, currentTimestampSeconds))
                 }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@VideoLectureActivity, "API Sync Failed", Toast.LENGTH_SHORT).show()
-                }
+
             }
+            Toast.makeText(this, "Transcript Loaded", Toast.LENGTH_SHORT).show()
         }
+        catch (e: Exception) {
+            Toast.makeText(this, "Transcript Load Failed", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
+//    /**
+//     * Simulates a call to the Zoom Cloud Recording API.
+//     * In a production app, you would use Retrofit or OkHttp to call
+//     * GET https://api.zoom.us/v2/meetings/{meetingId}/recordings
+//     */
+//    private fun fetchTranscriptFromZoom(videoUrl: String) {
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            try {
+//                // Mocking network delay
+//                delay(800)
+//
+//                // This simulates the JSON structure returned by Zoom's Recording API
+//                val mockApiResponse = """
+//                {
+//                    "recording_files": [
+//                        {
+//                            "file_type": "TRANSCRIPT",
+//                            "transcript_data": [
+//                                {"text": "Zoom recording started.", "start_time": 0},
+//                                {"text": "In this session, we analyze student productivity.", "start_time": 30},
+//                                {"text": "Let's look at the search feature implementation.", "start_time": 90},
+//                                {"text": "The API returns a JSON with timestamps.", "start_time": 150},
+//                                {"text": "Make Zoom your default app for all meetings.", "start_time": 210},
+//                                {"text": "Conclusion of the recording.", "start_time": 300}
+//                            ]
+//                        }
+//                    ]
+//                }
+//                """.trimIndent()
+//
+//                val jsonObject = JSONObject(mockApiResponse)
+//                val files = jsonObject.getJSONArray("recording_files")
+//                val apiTranscript = mutableListOf<TranscriptEntry>()
+//
+//                for (i in 0 until files.length()) {
+//                    val file = files.getJSONObject(i)
+//                    if (file.getString("file_type") == "TRANSCRIPT") {
+//                        val dataArray = file.getJSONArray("transcript_data")
+//                        for (j in 0 until dataArray.length()) {
+//                            val entry = dataArray.getJSONObject(j)
+//                            apiTranscript.add(TranscriptEntry(
+//                                entry.getString("text"),
+//                                entry.getInt("start_time")
+//                            ))
+//                        }
+//                    }
+//                }
+//
+//                withContext(Dispatchers.Main) {
+//                    transcript.clear()
+//                    transcript.addAll(apiTranscript)
+//                    // Reset search results for the new video
+//                    searchResults = emptyList()
+//                    currentResultIndex = 0
+//                    Toast.makeText(this@VideoLectureActivity, "Transcript Synced via Zoom API", Toast.LENGTH_SHORT).show()
+//                }
+//            } catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(this@VideoLectureActivity, "API Sync Failed", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//    }
+
     private fun performSearch(phrase: String) {
-        searchResults = transcript.filter { it.text.contains(phrase, ignoreCase = true) }
-        if (searchResults.isEmpty()) {
-            Toast.makeText(this, "Phrase not found in current recording", Toast.LENGTH_SHORT).show()
+        if (transcript.isEmpty()) {
+            Toast.makeText(this, "Load a video first to process transcript", Toast.LENGTH_SHORT).show()
             return
         }
+
+        searchResults = transcript.filter { it.text.contains(phrase, ignoreCase = true) }
+
+        if(searchResults.isEmpty()) {
+            Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         currentResultIndex = 0
         jumpToResult()
     }
@@ -193,10 +237,33 @@ class VideoLectureActivity : ComponentActivity() {
     }
 
     private fun seekTo(seconds: Int) {
-        val js = "javascript:(function() { var v = document.querySelector('video'); if(v){ v.currentTime = $seconds; v.play(); } })()"
-        webView.evaluateJavascript(js, null)
+        loadVideoAtTime(seconds)
     }
 
+    private fun loadVideoAtTime(seconds: Int) {
+        if (currentVideoId.isEmpty()) return
+
+        val html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin:0;padding:0;background-color:#000;">
+            <iframe width="100%" height="100%" 
+            src="https://www.youtube.com/embed/$currentVideoId?start=$seconds&autoplay=1&playsinline=1&enablejsapi=1&origin=https://localhost" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen>
+            </iframe>
+            </body>
+            </html>
+        """.trimIndent()
+
+        webView.loadDataWithBaseURL("https://localhost", html, "text/html", "utf-8",null)
+    }
+
+    //---Bottom navigation logic---
     private fun setupNavigation() {
         val bottomNav = findViewById<NavigationBarView>(R.id.bottomNavigationView)
         bottomNav.selectedItemId = R.id.nav_video_lectures
