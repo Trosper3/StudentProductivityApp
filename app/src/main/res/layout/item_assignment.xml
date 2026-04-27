@@ -18,22 +18,22 @@
             android:id="@+id/checkBoxCompleted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:text="Assignment Title"
+            android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginStart="12dp"
-            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/checkBoxCompleted"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textCourseName"
@@ -43,20 +43,24 @@
             android:layout_marginTop="4dp"
             android:text="CS 3318"
             android:textColor="#888888"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewDueDate"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/textViewTitle"
-            app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
+            app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/textViewDueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Due: Oct 25, 2023"
-            android:textSize="14sp"
-            android:textColor="#6D6D6D"
-            android:textStyle="italic"
             android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:text="Due: Oct 25, 2023"
+            android:textColor="#6D6D6D"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

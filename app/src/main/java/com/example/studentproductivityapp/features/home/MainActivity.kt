@@ -1,5 +1,8 @@
 package com.example.studentproductivityapp.features.home
 
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import com.example.studentproductivityapp.database.Assignment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -15,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentproductivityapp.AssignmentAdapter
+import com.example.studentproductivityapp.CanvasRetrofitClient
 import com.example.studentproductivityapp.R
 import com.example.studentproductivityapp.database.AppDatabase
 import com.example.studentproductivityapp.database.AssignmentRepository
@@ -27,10 +31,12 @@ import com.example.studentproductivityapp.viewmodel.AssignmentViewModelFactory
 import com.example.studentproductivityapp.features.pdf_scanner.SavedPdfsAdapter
 import com.example.studentproductivityapp.features.pdf_scanner.db.PdfDatabase
 import com.google.android.material.navigation.NavigationBarView
+import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class  MainActivity : AppCompatActivity() {
 
@@ -73,7 +79,7 @@ class  MainActivity : AppCompatActivity() {
 
         //settings button
         findViewById<ImageButton>(R.id.btnSettings).setOnClickListener {
-            Toast.makeText(this, "Settings coming soon!", Toast.LENGTH_SHORT).show()
+            showCanvasSyncDialog()
         }
 
         //------------Assignments "Quick View" -----------------------------------
@@ -137,28 +143,39 @@ class  MainActivity : AppCompatActivity() {
                     finish()
                     true
                 }
+
                 R.id.nav_campus_map -> {
                     if (isInternetAvailable()) {
                         startActivity(Intent(this, CampusMapActivity::class.java))
                         overridePendingTransition(0, 0)
                         finish()
                     } else {
-                        Toast.makeText(this, "Internet connection required for map.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Internet connection required for map.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     true
                 }
+
                 R.id.nav_pdf_scanner -> {
                     startActivity(Intent(this, PdfHubActivity::class.java))
                     overridePendingTransition(0, 0)
                     finish()
                     true
                 }
+
                 R.id.nav_video_lectures -> {
                     val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
 
                     if (!isLoggedIn) {
-                        Toast.makeText(this, "Please login to access Video Lectures", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            "Please login to access Video Lectures",
+                            Toast.LENGTH_LONG
+                        ).show()
                         false
                     } else if (isInternetAvailable()) {
                         startActivity(Intent(this, VideoLectureActivity::class.java))
@@ -166,10 +183,15 @@ class  MainActivity : AppCompatActivity() {
                         finish()
                         true
                     } else {
-                        Toast.makeText(this, "Internet connection required for video lectures.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Internet connection required for video lectures.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         true
                     }
                 }
+
                 else -> false
             }
         }
@@ -196,5 +218,95 @@ class  MainActivity : AppCompatActivity() {
             activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
             else -> false
         }
+
+
     }
+
+    private fun showCanvasSyncDialog() {
+        val input = EditText(this)
+        input.hint = "Paste Personal Access Token here"
+        input.setPadding(48, 48, 48, 48)
+
+        AlertDialog.Builder(this)
+            .setTitle("Sync with Canvas")
+            .setMessage(
+                "Generate a token un your Canvas Account Settings and paste it " +
+                        "below to pull your upcoming ISU assignments!"
+            )
+            .setView(input)
+            .setPositiveButton("Sync") { _, _ ->
+                val token = input.text.toString().trim()
+                if (token.isNotEmpty()) {
+                    fetchCanvasAssignments(token)
+                } else {
+                    Toast.makeText(this, "Please enter a token", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun fetchCanvasAssignments(token: String) {
+        //ensure that the Canvas token has 'Bearer' prefix for enterprise APIs
+        val authHeader = if (token.startsWith("Bearer")) token else "Bearer $token"
+        val assignmentDao = AppDatabase.getDatabase(this@MainActivity).assignmentDao()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val todoItems = CanvasRetrofitClient.api.getTodoItems(authHeader)
+
+                //Conver Canvas API models to local Room Database model
+                val newAssignments = todoItems.mapNotNull { item ->
+                    item.assignment?.let { canvasAssign ->
+                        var parsedMillis = 0L
+                        if (!canvasAssign.due_at.isNullOrEmpty()) {
+                            try{
+                                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+                                parsedMillis = sdf.parse(canvasAssign.due_at).time
+
+                            }
+                            catch (ignored: Exception){ }
+                        }
+                        Assignment(
+                            title = canvasAssign.name,
+                            courseName = "Course ID: ${canvasAssign.course_id}",
+                            dueDateMillis = parsedMillis,
+                            isCompleted = false
+                        )
+                    }
+                }
+
+                if (newAssignments.isNotEmpty()) {
+                    newAssignments.forEach { assignmentDao.insert(it) }
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Canvas Sync Successful",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+                else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "ISU Todo list is completely clear now!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Canvas Sync Failed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+        }
+    }
+
 }
