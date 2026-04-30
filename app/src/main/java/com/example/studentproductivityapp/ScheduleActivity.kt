@@ -2,6 +2,8 @@ package com.example.studentproductivityapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -97,7 +99,17 @@ class ScheduleActivity  : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //val fabDeleteAssignment = findViewById<FloatingActionButton>(R.id.fabDeleteAssignment)
+        val tvDeleteAssignment = findViewById<TextView>(R.id.tvDeleteAssignment)
+        tvDeleteAssignment.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete All Assignments")
+                .setMessage("Are you sure you want to delete all assignments?")
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.deleteAll()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
 
         // Bottom navigation bar existence
         val bottomNavigationView = findViewById<NavigationBarView>(R.id.bottomNavigationView)

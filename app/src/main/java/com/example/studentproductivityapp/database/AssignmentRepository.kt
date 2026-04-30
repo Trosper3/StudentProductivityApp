@@ -19,4 +19,8 @@ class AssignmentRepository(private val assignmentDao: AssignmentDao) {
     suspend fun delete(assignment: Assignment) {
         assignmentDao.delete(assignment)
     }
+
+    suspend fun deleteAll() {
+        assignmentDao.deleteAll()
+    }
 }
