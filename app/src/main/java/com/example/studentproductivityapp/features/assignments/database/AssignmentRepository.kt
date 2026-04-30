@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp.database
+package com.example.studentproductivityapp.features.assignments.database
 
 import kotlinx.coroutines.flow.Flow
 
@@ -23,4 +23,9 @@ class AssignmentRepository(private val assignmentDao: AssignmentDao) {
     suspend fun deleteAll() {
         assignmentDao.deleteAll()
     }
+<<<<<<< HEAD:app/src/main/java/com/example/studentproductivityapp/database/AssignmentRepository.kt
 }
+=======
+}
+
+>>>>>>> 4b5206ce7a6877c00914f002aaf2a61f14210d32:app/src/main/java/com/example/studentproductivityapp/features/assignments/database/AssignmentRepository.kt

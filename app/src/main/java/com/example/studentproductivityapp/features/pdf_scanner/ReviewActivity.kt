@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -36,6 +37,7 @@ class ReviewActivity : AppCompatActivity() {
     private val TAG = "ReviewActivity"
     private val DEBUG_VISIBLE_TEXT = false // Set to true to see OCR text in Red
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
@@ -70,6 +72,7 @@ class ReviewActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createPdf(pdfName: String) {
         if (ScanSession.pages.isEmpty()) {
             Toast.makeText(this, "Add at least one page", Toast.LENGTH_SHORT).show()

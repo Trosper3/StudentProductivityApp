@@ -49,10 +49,6 @@
 
         <!-- 3) Your app activities -->
         <activity
-            android:name=".ScheduleActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".features.pdf_scanner.SavedPdfsActivity"
             android:exported="false" />
 
@@ -92,7 +88,7 @@
 
         <!-- New activity for adding assignments -->
         <activity
-            android:name=".AddAssignmentActivity"
+            android:name=".features.assignments.AddAssignmentActivity"
             android:exported="false" />
 
         <!-- notifications -->

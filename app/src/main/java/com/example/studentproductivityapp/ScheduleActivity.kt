@@ -8,27 +8,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studentproductivityapp.database.AppDatabase
-import com.example.studentproductivityapp.database.AssignmentRepository
+import com.example.studentproductivityapp.features.assignments.database.AppDatabase
+import com.example.studentproductivityapp.features.assignments.database.AssignmentRepository
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
 import com.example.studentproductivityapp.features.video_lectures.VideoLectureActivity
-import com.example.studentproductivityapp.viewmodel.AssignmentViewModel
-import com.example.studentproductivityapp.viewmodel.AssignmentViewModelFactory
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
-
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.example.studentproductivityapp.features.assignments.AddAssignmentActivity
+import com.example.studentproductivityapp.features.assignments.AssignmentAdapter
 
-class ScheduleActivity  : AppCompatActivity() {
+class ScheduleActivity : AppCompatActivity() {
 
     private lateinit var viewModel: AssignmentViewModel
 
-    //open another activity when the user clicks on the add assignment button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_schedule)
 
         val database = AppDatabase.getDatabase(this)
@@ -41,8 +40,7 @@ class ScheduleActivity  : AppCompatActivity() {
         val rvPending = findViewById<RecyclerView>(R.id.rvPending)
         val rvCompleted = findViewById<RecyclerView>(R.id.rvCompleted)
 
-        //function for when user checks a box
-        val updateAssignment: (com.example.studentproductivityapp.database.Assignment, Boolean) -> Unit = { assignment, isChecked ->
+        val updateAssignment: (com.example.studentproductivityapp.features.assignments.database.Assignment, Boolean) -> Unit = { assignment, isChecked ->
             viewModel.update(assignment.copy(isCompleted = isChecked))
         }
 
@@ -116,11 +114,7 @@ class ScheduleActivity  : AppCompatActivity() {
             completedAdapter.submitList(completed)
         }
 
-        //______________________end of mods ^----------
-
-        val fabAddAssignment = findViewById<FloatingActionButton>(R.id.fabAddAssignment)
-        fabAddAssignment.setOnClickListener {
-
+        findViewById<FloatingActionButton>(R.id.fabAddAssignment).setOnClickListener {
             val intent = Intent(this, AddAssignmentActivity::class.java)
             startActivity(intent)
         }

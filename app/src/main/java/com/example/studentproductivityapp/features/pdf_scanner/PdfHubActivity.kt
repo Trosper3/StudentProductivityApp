@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.studentproductivityapp.R
-import com.example.studentproductivityapp.ScheduleActivity
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.video_lectures.VideoLectureActivity
@@ -66,7 +65,9 @@ class PdfHubActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_assignment_trackr -> {
-                    startActivity(Intent(this, ScheduleActivity::class.java))
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("show_schedule", true)
+                    startActivity(intent)
                     overridePendingTransition(0, 0)
                     finish()
                     true

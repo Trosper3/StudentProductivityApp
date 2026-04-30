@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -20,7 +21,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.example.studentproductivityapp.R
+import com.example.studentproductivityapp.features.assignments.AddAssignmentActivity
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_JPEG
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.concurrent.ExecutorService
@@ -32,10 +38,24 @@ class CameraActivity : androidx.activity.ComponentActivity() {
     private lateinit var btnCapture: Button
     private lateinit var textDetected: TextView
 
+    private lateinit var btnSmartScan: Button
+    private lateinit var btnReview: Button
+    private lateinit var btnCreateAssignment: Button
+
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var noteParser: NoteParser
+
+    private val scannerLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val scanResult = com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult.fromActivityResultIntent(result.data)
+            scanResult?.pages?.forEach { page ->
+                val uri = page.imageUri
+                processScannedPage(uri)
+            }
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val requestCameraPermission =
@@ -52,6 +72,9 @@ class CameraActivity : androidx.activity.ComponentActivity() {
         previewView = findViewById(R.id.previewView)
         btnCapture = findViewById(R.id.btnCapture)
         textDetected = findViewById(R.id.textDetected)
+        btnSmartScan = findViewById(R.id.btnSmartScan)
+        btnReview = findViewById(R.id.btnReview)
+        btnCreateAssignment = findViewById(R.id.btnCreateAssignment)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         noteParser = NoteParser(this)
@@ -61,6 +84,20 @@ class CameraActivity : androidx.activity.ComponentActivity() {
         }
 
         btnCapture.setOnClickListener { takePhoto() }
+
+        btnCreateAssignment.setOnClickListener {
+            val intent = Intent(this, AddAssignmentActivity::class.java)
+            // If we detected a date or title, pass them
+            lastDetectedDate?.let {
+                intent.putExtra("EXTRA_DUE_DATE", it)
+            }
+            lastDetectedTitle?.let {
+                intent.putExtra("EXTRA_TITLE", it)
+            }
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.btnSmartScan).setOnClickListener { startSmartScan() }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
@@ -140,21 +177,79 @@ class CameraActivity : androidx.activity.ComponentActivity() {
         }
     }
 
+    private var lastDetectedDate: Long? = null
+    private var lastDetectedTitle: String? = null
+
     private fun handleDetectedText(text: String) {
         // Look for keywords
         val hasKeyword = text.contains("Assignment", ignoreCase = true) || 
                          text.contains("Due", ignoreCase = true) ||
-                         text.contains("Exam", ignoreCase = true)
+                         text.contains("Exam", ignoreCase = true) ||
+                         text.contains("Syllabus", ignoreCase = true)
+
+        val detectedDate = noteParser.tryParseDate(text)
+        if (detectedDate != null) {
+            lastDetectedDate = detectedDate
+        }
+
+        val detectedTitle = noteParser.tryParseTitle(text)
+        if (detectedTitle != null && detectedTitle.isNotBlank()) {
+            lastDetectedTitle = detectedTitle
+        }
 
         runOnUiThread {
-            if (hasKeyword) {
-                textDetected.setText(R.string.ocr_keyword_detected)
+            if (hasKeyword || detectedDate != null) {
+                val message = if (detectedDate != null) {
+                    val sdf = java.text.SimpleDateFormat("MMM d, yyyy", java.util.Locale.getDefault())
+                    "Potential Assignment Detected!\nDue: ${sdf.format(java.util.Date(detectedDate))}"
+                } else {
+                    getString(R.string.ocr_keyword_detected)
+                }
+                textDetected.text = message
                 textDetected.visibility = View.VISIBLE
+                btnCreateAssignment.visibility = View.VISIBLE
             } else {
                 textDetected.visibility = View.GONE
             }
         }
         Log.d("OCR", "Detected text: $text")
+    }
+
+    private fun startSmartScan() {
+        val options = GmsDocumentScannerOptions.Builder()
+            .setScannerMode(SCANNER_MODE_FULL)
+            .setResultFormats(RESULT_FORMAT_JPEG)
+            .setGalleryImportAllowed(true)
+            .build()
+
+        val scanner = GmsDocumentScanning.getClient(options)
+        scanner.getStartScanIntent(this)
+            .addOnSuccessListener { intentSender ->
+                scannerLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+            }
+            .addOnFailureListener { e ->
+                Log.e("CameraActivity", "Failed to start scanner", e)
+                Toast.makeText(this, "Scanner failed: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun processScannedPage(uri: android.net.Uri) {
+        noteParser.extractTextLinesFromImage(
+            uri,
+            onSuccess = { lines ->
+                ScanSession.pages.add(ScanPage(uri, lines))
+                runOnUiThread {
+                    Toast.makeText(this, "Smart Scanned page added with OCR", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onError = { e ->
+                Log.e("CameraActivity", "OCR failed for smart scan", e)
+                ScanSession.pages.add(ScanPage(uri))
+                runOnUiThread {
+                    Toast.makeText(this, "Smart Scanned page added (OCR failed)", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     private fun takePhoto() {

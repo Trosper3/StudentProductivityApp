@@ -23,18 +23,41 @@
 
     <Button
         android:id="@+id/btnCapture"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Capture"
         android:layout_gravity="bottom|start"
-        android:layout_margin="50dp" />
+        android:layout_margin="16dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnCreateAssignment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/create_assignment"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnSmartScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_scan" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnReview"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Review"
         android:layout_gravity="bottom|end"
-        android:layout_margin="50dp" />
+        android:layout_margin="16dp" />
 
 </FrameLayout>
