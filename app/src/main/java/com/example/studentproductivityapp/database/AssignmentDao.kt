@@ -21,4 +21,8 @@ interface AssignmentDao {
     //Automatically fetch all assignments and sort them by due date
     @Query("SELECT * FROM assignments ORDER BY dueDateMillis ASC")
     fun getAllAssignments(): Flow<List<Assignment>>
+
+    //delete all assignments
+    @Query("DELETE FROM assignments")
+    suspend fun deleteAll()
 }

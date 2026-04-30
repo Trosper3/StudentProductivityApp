@@ -25,6 +25,10 @@ class AssignmentViewModel(private val repository: AssignmentRepository) : ViewMo
     fun delete(assignment: Assignment) = viewModelScope.launch {
         repository.delete(assignment)
     }
+
+    fun deleteAll() = viewModelScope.launch {
+        repository.deleteAll()
+    }
 }
 
 // Use Factory to create ViewModels with parameters
