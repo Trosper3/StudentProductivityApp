@@ -23,5 +23,6 @@
     <string name="nav_lectures">Lectures</string>
 
     <string name="ocr_keyword_detected">Keyword Detected!</string>
+    <string name="enter_video_lecture_url">Enter video lecture URL</string>
 
 </resources>

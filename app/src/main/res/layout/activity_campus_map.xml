@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="?android:attr/colorBackground"
     tools:context=".features.campus_map.CampusMapActivity">
 
 <WebView xmlns:android="http://schemas.android.com/apk/res/android"
