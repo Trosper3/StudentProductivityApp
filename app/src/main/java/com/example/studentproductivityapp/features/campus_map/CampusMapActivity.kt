@@ -9,7 +9,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import com.example.studentproductivityapp.R
-import com.example.studentproductivityapp.ScheduleActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
 import com.example.studentproductivityapp.features.video_lectures.VideoLectureActivity
@@ -61,7 +60,9 @@ class CampusMapActivity : ComponentActivity() {
                     }
 
                     R.id.nav_assignment_trackr -> {
-                        startActivity(Intent(this, ScheduleActivity::class.java))
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("show_schedule", true)
+                        startActivity(intent)
                         overridePendingTransition(0, 0)
                         finish()
                         true

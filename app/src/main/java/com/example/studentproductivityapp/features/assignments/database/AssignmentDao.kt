@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp.database
+package com.example.studentproductivityapp.features.assignments.database
 
 import androidx.room.Dao
 import androidx.room.Delete

@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentproductivityapp.R
-import com.example.studentproductivityapp.ScheduleActivity
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
@@ -270,7 +269,13 @@ class VideoLectureActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> { startActivity(Intent(this, MainActivity::class.java)); finish(); true }
-                R.id.nav_assignment_trackr -> { startActivity(Intent(this, ScheduleActivity::class.java)); finish(); true }
+                R.id.nav_assignment_trackr -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("show_schedule", true)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
                 R.id.nav_campus_map -> { startActivity(Intent(this, CampusMapActivity::class.java)); finish(); true }
                 R.id.nav_pdf_scanner -> { startActivity(Intent(this, PdfHubActivity::class.java)); finish(); true }
                 R.id.nav_video_lectures -> true

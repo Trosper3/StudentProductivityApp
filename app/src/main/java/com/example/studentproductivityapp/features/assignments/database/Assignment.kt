@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp.database
+package com.example.studentproductivityapp.features.assignments.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,5 +11,3 @@ data class Assignment(
     val dueDateMillis: Long, // Unix timestamp in milliseconds
     val isCompleted: Boolean = false
 )
-
-

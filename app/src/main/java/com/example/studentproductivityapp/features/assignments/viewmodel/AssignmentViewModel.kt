@@ -1,11 +1,11 @@
-package com.example.studentproductivityapp.viewmodel
+package com.example.studentproductivityapp.features.assignments.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.studentproductivityapp.database.Assignment
-import com.example.studentproductivityapp.database.AssignmentRepository
+import com.example.studentproductivityapp.features.assignments.database.Assignment
+import com.example.studentproductivityapp.features.assignments.database.AssignmentRepository
 import kotlinx.coroutines.launch
 
 class AssignmentViewModel(private val repository: AssignmentRepository) : ViewModel() {
@@ -43,6 +43,3 @@ class AssignmentViewModelFactory(private val repository: AssignmentRepository) :
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-
-
-

@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.assignments
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
