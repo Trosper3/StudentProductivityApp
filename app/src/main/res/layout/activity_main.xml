@@ -9,7 +9,6 @@
     android:fitsSystemWindows="true"
     tools:context=".features.home.MainActivity">
 
-<<<<<<< HEAD
     <TextView
         android:id="@+id/textTodayView"
         android:layout_width="wrap_content"
@@ -113,15 +112,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textRecentPDF"
         app:layout_constraintVertical_weight="1" />
-=======
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintTop_toTopOf="parent" />
->>>>>>> de6e481 (Program refactored for better structure, fragments added, Readme Updated to show functionality and structure, advanced scanner feature with AI for page recognition and adding assignments at camera capture)
-
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"

@@ -22,6 +22,7 @@ import com.example.studentproductivityapp.features.video_lectures.VideoLectureAc
 import com.google.android.material.navigation.NavigationBarView
 import java.util.Calendar
 import androidx.core.content.edit
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
 
 class MainActivity : AppCompatActivity() {
 

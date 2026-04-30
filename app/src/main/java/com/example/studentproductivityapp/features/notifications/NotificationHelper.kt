@@ -4,7 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.example.studentproductivityapp.database.Assignment
+import com.example.studentproductivityapp.features.assignments.database.Assignment
 
 object NotificationHelper {
     fun scheduleNotification(context: Context, assignment: Assignment) {
