@@ -5,11 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/isu_black"
-    android:fitsSystemWindows="true"
-    tools:context=".features.home.MainActivity">
+    android:background="@color/isu_black">
 
-<<<<<<< HEAD
     <TextView
         android:id="@+id/textTodayView"
         android:layout_width="wrap_content"
@@ -36,42 +33,39 @@
         app:layout_constraintTop_toBottomOf="@+id/textTodayView" />
 
     <ImageButton
-        android:id="@+id/btnLogin"
-        android:contentDescription="Login"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_myplaces"
-        app:tint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/btnSettings"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
         android:id="@+id/btnSettings"
         android:contentDescription="Settings"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_menu_preferences"
         app:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
+
+    <ImageButton
+        android:id="@+id/btnLogin"
+        android:contentDescription="Login"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:tint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btnSettings"
+        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
 
     <TextView
         android:id="@+id/textUpcomingTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
         android:text="Upcoming Tasks"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textDateView" />
 
@@ -107,33 +101,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:paddingHorizontal="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textRecentPDF"
-        app:layout_constraintVertical_weight="1" />
-=======
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintTop_toTopOf="parent" />
->>>>>>> de6e481 (Program refactored for better structure, fragments added, Readme Updated to show functionality and structure, advanced scanner feature with AI for page recognition and adding assignments at camera capture)
-
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomNavigationView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_rounded_nav"
-                app:itemIconTint="@color/nav_item_colors"
-                app:itemTextColor="@color/nav_item_colors"
-                app:labelVisibilityMode="labeled"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:menu="@menu/bottom_nav" />
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRecentPDF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

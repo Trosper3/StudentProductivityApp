@@ -23,5 +23,9 @@
     <string name="nav_lectures">Lectures</string>
 
     <string name="ocr_keyword_detected">Keyword Detected!</string>
+    <string name="smart_scan">Smart Scan</string>
+    <string name="create_assignment">Create Assignment</string>
+
+
 
 </resources>

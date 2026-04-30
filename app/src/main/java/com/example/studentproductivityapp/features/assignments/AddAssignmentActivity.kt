@@ -1,15 +1,16 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.assignments
 
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.studentproductivityapp.database.AppDatabase
-import com.example.studentproductivityapp.database.Assignment
-import com.example.studentproductivityapp.database.AssignmentRepository
-import com.example.studentproductivityapp.viewmodel.AssignmentViewModel
-import com.example.studentproductivityapp.viewmodel.AssignmentViewModelFactory
+import com.example.studentproductivityapp.R
+import com.example.studentproductivityapp.features.assignments.database.AppDatabase
+import com.example.studentproductivityapp.features.assignments.database.Assignment
+import com.example.studentproductivityapp.features.assignments.database.AssignmentRepository
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModelFactory
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
@@ -37,6 +38,15 @@ class AddAssignmentActivity : AppCompatActivity() {
         val courseInput = findViewById<TextInputEditText>(R.id.etCourseName)
         val dueDateButton = findViewById<Button>(R.id.btnPickDueDate)
         val saveButton = findViewById<Button>(R.id.btnSaveAssignment)
+
+        // Pre-populate if intent has extras (e.g., from OCR)
+        intent.getStringExtra("EXTRA_TITLE")?.let { titleInput.setText(it) }
+        val initialDate = intent.getLongExtra("EXTRA_DUE_DATE", -1L)
+        if (initialDate != -1L) {
+            selectedDueDateMillis = initialDate
+            val dateString = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+            dueDateButton.text = "Due: ${dateString.format(Date(selectedDueDateMillis))}"
+        }
 
         dueDateButton.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()

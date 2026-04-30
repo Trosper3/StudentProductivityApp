@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/activitySchedule"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark"
-    tools:context=".ScheduleActivity">
-
-    <com.google.android.material.navigationrail.NavigationRailView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/bg_rounded_nav"
-        app:itemIconTint="@color/isu_orange"
-        app:itemTextColor="@color/isu_orange"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav" />
+    android:background="@android:color/background_dark">
 
     <TextView
         android:id="@+id/textToDo"
@@ -32,7 +17,7 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/bottomNavigationView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -56,8 +41,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/bottomNavigationView"
-        app:layout_constraintTop_toBottomOf="@id/textToDo">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textToDo">
 
         <TextView
             android:id="@+id/textPendingHeader"
@@ -78,6 +63,7 @@
             android:padding="8dp"
             android:clipToPadding="false"
             app:layout_constraintVertical_weight="1"
+            android:contentDescription="@string/assignment_list_description"
             app:layout_constraintTop_toBottomOf="@+id/textPendingHeader"
             app:layout_constraintBottom_toTopOf="@+id/textCompletedHeader"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,14 +83,13 @@
             app:layout_constraintBottom_toTopOf="@+id/rvCompleted"
             app:layout_constraintStart_toStartOf="parent" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCompleted"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="8dp"
             android:clipToPadding="false"
-            android:contentDescription="@string/assignment_list_description"
+            app:layout_constraintVertical_weight="1"
             app:layout_constraintTop_toBottomOf="@+id/textCompletedHeader"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,6 +105,7 @@
             android:src="@android:drawable/ic_input_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

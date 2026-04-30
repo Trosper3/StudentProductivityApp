@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp.database
+package com.example.studentproductivityapp.features.assignments.database
 
 import kotlinx.coroutines.flow.Flow
 
@@ -24,3 +24,4 @@ class AssignmentRepository(private val assignmentDao: AssignmentDao) {
         assignmentDao.deleteAll()
     }
 }
+

@@ -78,6 +78,7 @@ dependencies {
 
     // ML Kit Text Recognition
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.mlkit.document.scanner)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

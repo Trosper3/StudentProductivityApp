@@ -1,4 +1,4 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.assignments
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studentproductivityapp.database.Assignment
+import com.example.studentproductivityapp.R
+import com.example.studentproductivityapp.features.assignments.database.Assignment
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -69,5 +70,3 @@ class AssignmentAdapter(
         }
     }
 }
-
-
