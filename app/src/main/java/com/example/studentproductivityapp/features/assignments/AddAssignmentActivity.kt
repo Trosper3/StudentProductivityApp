@@ -11,6 +11,7 @@ import com.example.studentproductivityapp.features.assignments.database.Assignme
 import com.example.studentproductivityapp.features.assignments.database.AssignmentRepository
 import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
 import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModelFactory
+import com.example.studentproductivityapp.features.notifications.NotificationHelper
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
@@ -80,6 +81,10 @@ class AddAssignmentActivity : AppCompatActivity() {
             )
 
             viewModel.insert(newAssignment)
+            
+            // Schedule notification for the new assignment
+            NotificationHelper.scheduleNotification(this, newAssignment)
+
             Toast.makeText(this, "Assignment saved", Toast.LENGTH_SHORT).show()
             finish()
         }

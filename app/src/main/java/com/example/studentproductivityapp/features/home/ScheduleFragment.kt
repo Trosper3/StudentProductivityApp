@@ -81,5 +81,16 @@ class ScheduleFragment : Fragment() {
             val intent = Intent(requireContext(), AddAssignmentActivity::class.java)
             startActivity(intent)
         }
+
+        view.findViewById<View>(R.id.tvDeleteAssignment).setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete All Assignments")
+                .setMessage("Are you sure you want to delete all assignments?")
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.deleteAll()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
     }
 }

@@ -9,20 +9,33 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.studentproductivityapp.R
+import com.example.studentproductivityapp.features.assignments.CanvasRetrofitClient
+import com.example.studentproductivityapp.features.assignments.database.AppDatabase
+import com.example.studentproductivityapp.features.assignments.database.Assignment
+import com.example.studentproductivityapp.features.notifications.NotificationHelper
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
 import com.example.studentproductivityapp.features.video_lectures.VideoLectureActivity
 import com.google.android.material.navigation.NavigationBarView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.Calendar
-import androidx.core.content.edit
-import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +60,11 @@ class MainActivity : AppCompatActivity() {
 
         val textTodayView = findViewById<TextView>(R.id.textTodayView)
         val btnLogin = findViewById<ImageButton>(R.id.btnLogin)
+        val textDateView = findViewById<TextView>(R.id.textDateView)
+
+        // Set current date
+        val sdf = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
+        textDateView.text = sdf.format(Date())
 
         // Check login status and update UI
         updateGreetingUI(textTodayView, btnLogin)
@@ -65,6 +83,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Logged in as Jerry", Toast.LENGTH_SHORT).show()
             }
             updateGreetingUI(textTodayView, btnLogin)
+        }
+
+        findViewById<ImageButton>(R.id.btnSettings).setOnClickListener {
+            showSettingsDialog()
         }
 
         // Bottom navigation bar setup
@@ -128,7 +150,7 @@ class MainActivity : AppCompatActivity() {
         val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
 
         //Default to "User" if not logged in
-        val savedName = sharedPref.getString("user_name", "User")
+        val savedName = sharedPref.getString("user_name", "Student")
 
         //fetch current hour of day
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
@@ -144,6 +166,94 @@ class MainActivity : AppCompatActivity() {
         } else {
             textView.text = "$timeOfDayGreeting, Student"
             button.setImageResource(android.R.drawable.ic_menu_myplaces)
+        }
+    }
+
+    private fun showSettingsDialog() {
+        val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val paddingPx = (24 * resources.displayMetrics.density).toInt()
+
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
+        }
+
+        val nameInput = EditText(this).apply {
+            hint = "Change Display Name"
+            setText(sharedPref.getString("user_name", "Student"))
+        }
+        layout.addView(nameInput)
+
+        //Canvas Token Input
+        val tokenInput = EditText(this).apply {
+            hint = "Paste Canvas Personal Access Token"
+            setPadding(0, 48, 0, 0)
+        }
+        layout.addView(tokenInput)
+
+        AlertDialog.Builder(this)
+            .setTitle("Settings")
+            .setView(layout)
+            .setPositiveButton("Save & Sync") { _, _ ->
+                val newName = nameInput.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    sharedPref.edit { putString("user_name", newName) }
+                    updateGreetingUI(findViewById(R.id.textTodayView), findViewById(R.id.btnLogin))
+                }
+
+                val token = tokenInput.text.toString().trim()
+                if (token.isNotEmpty()) {
+                    fetchCanvasAssignments(token)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun fetchCanvasAssignments(token: String) {
+        val authHeader = if (token.startsWith("Bearer")) token else "Bearer $token"
+        val assignmentDao = AppDatabase.getDatabase(this).assignmentDao()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val todoItems = CanvasRetrofitClient.api.getTodoItems(authHeader)
+                val newAssignments = todoItems.mapNotNull { item ->
+                    item.assignment?.let { canvasAssign ->
+                        var parsedMillis = 0L
+                        if (!canvasAssign.due_at.isNullOrEmpty()) {
+                            try {
+                                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+                                parsedMillis = sdf.parse(canvasAssign.due_at)?.time ?: 0L
+                            } catch (ignored: Exception) {}
+                        }
+                        Assignment(
+                            title = canvasAssign.name,
+                            courseName = "Course ID: ${canvasAssign.course_id}",
+                            dueDateMillis = parsedMillis,
+                            isCompleted = false
+                        )
+                    }
+                }
+
+                if (newAssignments.isNotEmpty()) {
+                    newAssignments.forEach { 
+                        assignmentDao.insert(it)
+                        // Schedule notification for each new assignment
+                        NotificationHelper.scheduleNotification(this@MainActivity, it)
+                    }
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "Canvas Sync Successful", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "ISU Todo list is clear!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Canvas Sync Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

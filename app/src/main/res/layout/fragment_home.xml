@@ -8,66 +8,17 @@
     android:background="@color/isu_black">
 
     <TextView
-        android:id="@+id/textTodayView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Good Afternoon, Student"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="Loading today's day...."
-        android:textColor="@color/isu_orange"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTodayView" />
-
-    <ImageButton
-        android:id="@+id/btnSettings"
-        android:contentDescription="Settings"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_preferences"
-        app:tint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
-
-    <ImageButton
-        android:id="@+id/btnLogin"
-        android:contentDescription="Login"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_myplaces"
-        app:tint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/btnSettings"
-        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
-
-    <TextView
         android:id="@+id/textUpcomingTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Upcoming Tasks"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textDateView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvQuickView"
