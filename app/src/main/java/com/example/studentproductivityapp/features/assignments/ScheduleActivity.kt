@@ -1,26 +1,29 @@
-package com.example.studentproductivityapp
+package com.example.studentproductivityapp.features.assignments
 
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.studentproductivityapp.R
 import com.example.studentproductivityapp.features.assignments.database.AppDatabase
+import com.example.studentproductivityapp.features.assignments.database.Assignment
 import com.example.studentproductivityapp.features.assignments.database.AssignmentRepository
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
+import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModelFactory
 import com.example.studentproductivityapp.features.campus_map.CampusMapActivity
 import com.example.studentproductivityapp.features.home.MainActivity
 import com.example.studentproductivityapp.features.pdf_scanner.PdfHubActivity
 import com.example.studentproductivityapp.features.video_lectures.VideoLectureActivity
-import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModel
-import com.example.studentproductivityapp.features.assignments.viewmodel.AssignmentViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
-import androidx.recyclerview.widget.ItemTouchHelper
-import com.example.studentproductivityapp.features.assignments.AddAssignmentActivity
-import com.example.studentproductivityapp.features.assignments.AssignmentAdapter
 
 class ScheduleActivity : AppCompatActivity() {
 
@@ -30,17 +33,17 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        val database = AppDatabase.getDatabase(this)
+        val database = AppDatabase.Companion.getDatabase(this)
         val repo = AssignmentRepository(database.assignmentDao())
         val factory = AssignmentViewModelFactory(repo)
-        
+
         viewModel = ViewModelProvider(this, factory)[AssignmentViewModel::class.java]
 
         //Hook up both RecyclerViews in activity_schedule.xml
         val rvPending = findViewById<RecyclerView>(R.id.rvPending)
         val rvCompleted = findViewById<RecyclerView>(R.id.rvCompleted)
 
-        val updateAssignment: (com.example.studentproductivityapp.features.assignments.database.Assignment, Boolean) -> Unit = { assignment, isChecked ->
+        val updateAssignment: (Assignment, Boolean) -> Unit = { assignment, isChecked ->
             viewModel.update(assignment.copy(isCompleted = isChecked))
         }
 
@@ -71,7 +74,7 @@ class ScheduleActivity : AppCompatActivity() {
             }
 
             override fun onChildDraw(
-                c: android.graphics.Canvas,
+                c: Canvas,
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 dX: Float,
@@ -82,7 +85,7 @@ class ScheduleActivity : AppCompatActivity() {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
                 val itemView = viewHolder.itemView
-                val background = android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#EF5350")) // Material Red
+                val background = ColorDrawable(Color.parseColor("#EF5350")) // Material Red
 
                 // You can add a trash can icon if you have one in your drawable folder!
                 // val icon = androidx.core.content.ContextCompat.getDrawable(this@ScheduleActivity, android.R.drawable.ic_menu_delete)
@@ -121,7 +124,7 @@ class ScheduleActivity : AppCompatActivity() {
 
         val tvDeleteAssignment = findViewById<TextView>(R.id.tvDeleteAssignment)
         tvDeleteAssignment.setOnClickListener {
-            androidx.appcompat.app.AlertDialog.Builder(this)
+            AlertDialog.Builder(this)
                 .setTitle("Delete All Assignments")
                 .setMessage("Are you sure you want to delete all assignments?")
                 .setPositiveButton("Yes") { _, _ ->

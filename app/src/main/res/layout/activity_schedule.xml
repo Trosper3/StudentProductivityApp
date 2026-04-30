@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    tools:context=".ScheduleActivity">
+    tools:context=".features.assignments.ScheduleActivity">
 
     <TextView
         android:id="@+id/textToDo"
