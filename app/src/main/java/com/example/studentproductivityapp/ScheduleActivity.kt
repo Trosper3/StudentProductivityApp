@@ -2,6 +2,7 @@ package com.example.studentproductivityapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +36,7 @@ class ScheduleActivity : AppCompatActivity() {
         
         viewModel = ViewModelProvider(this, factory)[AssignmentViewModel::class.java]
 
+        //Hook up both RecyclerViews in activity_schedule.xml
         val rvPending = findViewById<RecyclerView>(R.id.rvPending)
         val rvCompleted = findViewById<RecyclerView>(R.id.rvCompleted)
 
@@ -42,8 +44,10 @@ class ScheduleActivity : AppCompatActivity() {
             viewModel.update(assignment.copy(isCompleted = isChecked))
         }
 
+        //set up two separate adapters for the two sections
         val pendingAdapter = AssignmentAdapter(updateAssignment)
         val completedAdapter = AssignmentAdapter(updateAssignment)
+
 
         rvPending.adapter = pendingAdapter
         rvPending.layoutManager = LinearLayoutManager(this)
@@ -51,6 +55,8 @@ class ScheduleActivity : AppCompatActivity() {
         rvCompleted.adapter = completedAdapter
         rvCompleted.layoutManager = LinearLayoutManager(this)
 
+        //Swipe-to-delete functionality
+// Swipe-to-delete functionality with Red Background and Icon
         val swipeToDeleteCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
 
@@ -63,15 +69,47 @@ class ScheduleActivity : AppCompatActivity() {
                     viewModel.delete(it)
                 }
             }
+
+            override fun onChildDraw(
+                c: android.graphics.Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                val itemView = viewHolder.itemView
+                val background = android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#EF5350")) // Material Red
+
+                // You can add a trash can icon if you have one in your drawable folder!
+                // val icon = androidx.core.content.ContextCompat.getDrawable(this@ScheduleActivity, android.R.drawable.ic_menu_delete)
+
+                if (dX > 0) { // Swiping to the right
+                    background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                } else if (dX < 0) { // Swiping to the left
+                    background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0)
+                }
+                background.draw(c)
+            }
         }
 
+        // Attach the swipe gesture to both lists
         ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(rvPending)
         ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(rvCompleted)
 
+        // Observe the database and filter into respective sections
         viewModel.allAssignments.observe(this) { assignments ->
+            // Filter pending and sort by date
             val pending = assignments.filter { !it.isCompleted }.sortedBy { it.dueDateMillis }
+            // Filter completed and sort by date
             val completed = assignments.filter { it.isCompleted }.sortedBy { it.dueDateMillis }
 
+            // Submit to their respective sections
             pendingAdapter.submitList(pending)
             completedAdapter.submitList(completed)
         }
@@ -81,7 +119,8 @@ class ScheduleActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<TextView>(R.id.tvDeleteAssignment).setOnClickListener {
+        val tvDeleteAssignment = findViewById<TextView>(R.id.tvDeleteAssignment)
+        tvDeleteAssignment.setOnClickListener {
             androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Delete All Assignments")
                 .setMessage("Are you sure you want to delete all assignments?")
@@ -92,7 +131,10 @@ class ScheduleActivity : AppCompatActivity() {
                 .show()
         }
 
+        // Bottom navigation bar existence
         val bottomNavigationView = findViewById<NavigationBarView>(R.id.bottomNavigationView)
+
+        // Set the highlighted tab in nav bar
         bottomNavigationView.selectedItemId = R.id.nav_assignment_trackr
 
         bottomNavigationView.setOnItemSelectedListener { item ->

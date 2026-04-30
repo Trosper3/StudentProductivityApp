@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
-    app:cardBackgroundColor="@color/isu_card_bg"
+    app:cardBackgroundColor="?android:attr/colorBackground"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Document"
-            android:textColor="@color/white"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/btnDelete"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="2023-10-27"
-            android:textColor="@color/isu_gray"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toStartOf="@+id/btnDelete"

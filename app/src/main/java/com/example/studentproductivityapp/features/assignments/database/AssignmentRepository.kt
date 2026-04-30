@@ -23,5 +23,6 @@ class AssignmentRepository(private val assignmentDao: AssignmentDao) {
     suspend fun deleteAll() {
         assignmentDao.deleteAll()
     }
+
 }
 

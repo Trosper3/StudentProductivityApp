@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/isu_black"
+    android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true"
     android:paddingTop="16dp"
     tools:context=".features.video_lectures.VideoLectureActivity">
@@ -17,7 +17,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:text="Lecture Search"
-        android:textColor="@color/white"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +30,9 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="32dp"
         android:backgroundTint="@color/isu_orange"
-        android:hint="Enter video lecture URL"
-        android:textColorHint="@color/isu_gray"
-        android:textColor="@color/white"
+        android:hint="@string/enter_video_lecture_url"
+        android:textColorHint="?android:attr/textColorSecondary"
+        android:textColor="?android:attr/textColorPrimary"
         android:inputType="textUri"
         android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@+id/textLectureHeader" />
@@ -47,8 +47,8 @@
         android:hint="@string/search_phrase_hint"
         android:inputType="text"
         android:padding="16dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/isu_gray"
+        android:textColorHint="?android:attr/textColorSecondary"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintTop_toBottomOf="@+id/etVideoUrl" />
 
     <Button
